@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.Navigation.WeatherScreens
 import com.example.weatherapp.R
+import com.example.weatherapp.ui.theme.fontFamily1
 import kotlinx.coroutines.delay
 
 
@@ -72,6 +73,7 @@ fun WeatherSplashScreen(navController: NavHostController) {
             Text(
                 modifier = Modifier.padding(15.dp),
                 text = "Your personal weather concierge.",
+                fontFamily = fontFamily1,
                 textAlign = TextAlign.Justify
             )
 

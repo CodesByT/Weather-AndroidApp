@@ -18,26 +18,29 @@ class MainViewModel
     private val repository: WeatherRepository
 ) : ViewModel() {
 
-    val data: MutableState<DataOrException<Weather, Boolean, Exception>> =
-        mutableStateOf(DataOrException(null, true, Exception("")))
-
-    init {
-        loadWeather()
+    suspend fun getWeatherData(city: String): DataOrException<Weather, Boolean, Exception> {
+        return repository.getWeather(cityQuery = city)
     }
-
-    private fun loadWeather() {
-        getWeather("Seattle")
-    }
-
-    private fun getWeather(city: String) {
-        viewModelScope.launch {
-            if (city.isEmpty()) return@launch // empty return from coroutine scope
-            data.value.loading = true // means data is loading
-            data.value = repository.getWeather(city) // get the data
-            if (data.value.data.toString().isNotEmpty()) {
-                data.value.loading = false
-            }
-        }
-        Log.d("GET", "getWeather: ${data.value.data.toString()}")
-    }
+//    val data: MutableState<DataOrException<Weather, Boolean, Exception>> =
+//        mutableStateOf(DataOrException(null, true, Exception("")))
+//
+//    init {
+//        loadWeather()
+//    }
+//
+//    private fun loadWeather() {
+//        getWeather("Seattle")
+//    }
+//
+//    private fun getWeather(city: String) {
+//        viewModelScope.launch {
+//            if (city.isEmpty()) return@launch // empty return from coroutine scope
+//            data.value.loading = true // means data is loading
+//            data.value = repository.getWeather(city) // get the data
+//            if (data.value.data.toString().isNotEmpty()) {
+//                data.value.loading = false
+//            }
+//        }
+//        Log.d("GET", "getWeather: ${data.value.data.toString()}")
+//    }
 }

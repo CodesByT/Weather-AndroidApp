@@ -103,10 +103,13 @@ dependencies {
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     implementation ("androidx.compose.ui:ui:1.7.0-alpha04")
     implementation ("androidx.compose.material:material:1.7.0-alpha03")
     implementation ("androidx.compose.ui:ui-tooling:1.7.0-alpha04")
+
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.3")
 }

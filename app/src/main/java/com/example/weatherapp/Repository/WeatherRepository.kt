@@ -1,5 +1,6 @@
 package com.example.weatherapp.Repository
 
+import android.util.Log
 import com.example.weatherapp.Data.DataOrException
 import com.example.weatherapp.Models.Weather
 import com.example.weatherapp.Models.WeatherObject
@@ -16,8 +17,10 @@ class WeatherRepository @Inject constructor(
         val response = try {
             api.getWeather(query = cityQuery)
         }catch (e:Exception){
+            Log.d("REX","$e")
             return DataOrException(e = e) // returning an object of DataOrException
         }
         return DataOrException(data = response)
+
     }
 }
