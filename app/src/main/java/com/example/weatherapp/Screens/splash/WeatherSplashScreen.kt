@@ -14,8 +14,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.example.weatherapp.Navigation.WeatherScreens
 import com.example.weatherapp.R
 import kotlinx.coroutines.delay
@@ -45,15 +56,26 @@ fun WeatherSplashScreen(navController: NavHostController) {
 
     Surface(
         modifier = Modifier
-            .scale(scale.value)
             .fillMaxSize()
     ) {
         Image(
             painter = painterResource(id = R.drawable.splashscreen2),
             contentDescription = "Splash Image",
             contentScale = ContentScale.Crop,
-            modifier = Modifier
         )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .scale(scale.value),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.padding(15.dp),
+                text = "Your personal weather concierge.",
+                textAlign = TextAlign.Justify
+            )
+
+        }
     }
 }
 
