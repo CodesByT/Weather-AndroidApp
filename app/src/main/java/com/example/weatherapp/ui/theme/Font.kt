@@ -10,8 +10,13 @@ val provider = GoogleFont.Provider(
     providerPackage = "com.google.android.gms",
     certificates = R.array.com_google_android_gms_fonts_certs
 )
-val fontName1 = GoogleFont("Angkor")
 
+val fontName1 = GoogleFont("Alfa Slab One")
 val fontFamily1 = FontFamily(
     Font(googleFont = fontName1, fontProvider = provider)
+)
+
+val fontName2 = GoogleFont("Jost")
+val fontFamily2 = FontFamily(
+    Font(googleFont = fontName2, fontProvider = provider)
 )
