@@ -33,7 +33,10 @@ import androidx.compose.ui.unit.sp
 import com.example.weatherapp.Navigation.WeatherScreens
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.fontFamily1
+import com.example.weatherapp.ui.theme.fontFamily2
+import com.example.weatherapp.ui.theme.fontFamily3
 import com.example.weatherapp.ui.theme.fontFamily4
+import com.example.weatherapp.ui.theme.fontFamily5
 import kotlinx.coroutines.delay
 
 
@@ -89,6 +92,11 @@ fun WeatherSplashScreen(navController: NavHostController) {
                 )
 
             )
+            // This is just a DESI technique to load the fonts when we are on the splash screen
+            Text(text = "",fontFamily = fontFamily5)
+            Text(text = "",fontFamily = fontFamily3)
+            Text(text = "",fontFamily = fontFamily2)
+            Text(text = "",fontFamily = fontFamily1)
 
         }
     }

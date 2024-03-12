@@ -4,14 +4,19 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -37,7 +42,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.weatherapp.R
+import com.example.weatherapp.Utilitites.formatDate
+import com.example.weatherapp.Utilitites.formatDateTime
 import com.example.weatherapp.Widgets.TopSearchBar
 import com.example.weatherapp.ui.theme.fontFamily1
 import com.example.weatherapp.ui.theme.fontFamily2
@@ -58,7 +67,7 @@ fun WeatherMainScreen(
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true),
         producer = {
-            value = mainViewModel.getWeatherData(city = "Lahore")
+            value = mainViewModel.getWeatherData(city = "Budapest")
         }
     ).value
 
@@ -80,7 +89,10 @@ fun WeatherMainScreen(
 @Composable
 fun MainScreenUI(weatherData: Weather, navController: NavController) {
 
+    val imageURl = "https://openweathermap.org/img/wn/${weatherData.list[0].weather[0].icon}.png"
+
     val temperature = weatherData.list[0].main.temp.toInt()
+
     val calendar = remember {
         Calendar.getInstance()
     }
@@ -94,7 +106,7 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.n12),
+            painter = painterResource(id = R.drawable.n3),
             contentDescription = "HomeScreen",
             contentScale = ContentScale.Crop,
         )
@@ -114,11 +126,13 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    //verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
+// City and County
                         fontFamily = fontFamily2,
-                        modifier = Modifier.padding(top = 30.dp),
+                        modifier = Modifier.padding(top = 15.dp),
                         style = TextStyle(
                             shadow = Shadow(
                                 color = Color.Black, offset = Offset(5.0f, 10.0f), blurRadius = 3f
@@ -129,6 +143,7 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
                         color = Color(0xE1FFFFFF),
                     )
                     Text(
+// Date
                         fontFamily = fontFamily2,
                         modifier = Modifier.padding(top = 10.dp),
                         style = TextStyle(
@@ -136,11 +151,11 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
                                 color = Color.Black, offset = Offset(5.0f, 10.0f), blurRadius = 3f
                             )
                         ),
-                        text = "$dayName, $monthName $formattedDay, $year",
+                        text = formatDate(weatherData.list[0].dt.toInt()),
                         fontSize = 25.sp,
                         color = Color(0xFFCFCDCD),
                     )
-                    Text(
+                    Text(// Temperature
                         fontFamily = fontFamily5,
                         modifier = Modifier.padding(top = 15.dp),
                         style = TextStyle(
@@ -153,28 +168,163 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
                         color = Color(0xE1FFFFFF),
                         fontWeight = FontWeight.ExtraBold
                     )
-                    Text(
-                        fontFamily = fontFamily3,
-                        style = TextStyle(
-                            shadow = Shadow(
-                                color = Color.Black, offset = Offset(5.0f, 10.0f), blurRadius = 3f
-                            )
-                        ),
-                        text = "----------",
-                        fontSize = 40.sp,
+                    Divider( // Divider
+                        modifier = Modifier.width(150.dp),
                         color = Color(0xE1FFFFFF),
+                        thickness = 3.dp
                     )
-                    Text(
-                        fontFamily = fontFamily2,
-                        style = TextStyle(
-                            shadow = Shadow(
-                                color = Color.Black, offset = Offset(5.0f, 10.0f), blurRadius = 3f
+                    Row(// Row 1
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            fontFamily = fontFamily2,
+                            style = TextStyle(
+                                shadow = Shadow(
+                                    color = Color.Black,
+                                    offset = Offset(5.0f, 10.0f),
+                                    blurRadius = 3f
+                                )
+                            ),
+                            text = weatherData.list[0].weather[0].main,
+                            fontSize = 25.sp,
+                            color = Color(0xE1FFFFFF),
+                        )
+                        Image(
+                            painter = rememberAsyncImagePainter(imageURl),
+                            contentDescription = "Icon",
+                            modifier = Modifier.size(60.dp)
+                        )
+                    }
+                    Row(// Humidity and Wind pressure Row
+                        modifier = Modifier.fillMaxWidth().padding(start = 20.dp,end =20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = "Humidity Index: ",
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                                fontWeight = FontWeight.W700
                             )
-                        ),
-                        text = weatherData.list[0].weather[0].main,
-                        fontSize = 25.sp,
-                        color = Color(0xE1FFFFFF),
-                    )
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = weatherData.list[0].main.humidity.toString()+ " psi",
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                            )
+                        }
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = "Wind Pressure: ",
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                                fontWeight = FontWeight.W700
+                            )
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = weatherData.list[0].main.pressure.toString()+ " mph",
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                            )
+                        }
+                    }
+                    Row(// Sun Rise and Sun Set
+                        modifier = Modifier.fillMaxWidth().padding(start = 20.dp,end =20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = "Sun Rise: ",
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                                fontWeight = FontWeight.W700
+                            )
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text =  formatDateTime(weatherData.city.sunrise),
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                            )
+                        }
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = "Sun Set: ",
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                                fontWeight = FontWeight.W700
+                            )
+                            Text(
+                                fontFamily = fontFamily2,
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black,
+                                        offset = Offset(5.0f, 10.0f),
+                                        blurRadius = 3f
+                                    )
+                                ),
+                                text = formatDateTime(weatherData.city.sunset),
+                                fontSize = 15.sp,
+                                color = Color(0xE1FFFFFF),
+                            )
+                        }
+                    }
+
 
                 }
 
