@@ -20,3 +20,21 @@ val fontName2 = GoogleFont("Jost")
 val fontFamily2 = FontFamily(
     Font(googleFont = fontName2, fontProvider = provider)
 )
+
+val fontName3 = GoogleFont("Indie Flower")
+val fontFamily3 = FontFamily(
+    Font(googleFont = fontName3, fontProvider = provider)
+)
+
+val fontName4 = GoogleFont("Gloria Hallelujah")
+val fontFamily4 = FontFamily(
+    Font(googleFont = fontName4, fontProvider = provider)
+)
+
+val fontName5 = GoogleFont("Staatliches")
+val fontFamily5 = FontFamily(
+    Font(googleFont = fontName5, fontProvider = provider)
+)
+
+
+

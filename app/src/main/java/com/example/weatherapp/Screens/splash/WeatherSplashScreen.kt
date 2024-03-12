@@ -24,17 +24,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.weatherapp.Navigation.WeatherScreens
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.fontFamily1
+import com.example.weatherapp.ui.theme.fontFamily4
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun WeatherSplashScreen(navController: NavHostController) {
+    val gradientColors = listOf(Color(0xffffffff), Color(0xFFFFD54F), Color(0xFFE65100))
     val scale = remember {
         Animatable(0f)
     }
@@ -73,8 +78,16 @@ fun WeatherSplashScreen(navController: NavHostController) {
             Text(
                 modifier = Modifier.padding(15.dp),
                 text = "Your personal weather concierge.",
-                fontFamily = fontFamily1,
-                textAlign = TextAlign.Justify
+                fontFamily = fontFamily4,
+                textAlign = TextAlign.Center,
+                color = Color(0xffffffff),
+                fontSize = 20.sp,
+                style = TextStyle(
+                    brush = Brush.linearGradient(
+                        colors = gradientColors
+                    )
+                )
+
             )
 
         }
