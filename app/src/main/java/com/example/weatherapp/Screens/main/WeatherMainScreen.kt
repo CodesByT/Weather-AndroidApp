@@ -2,6 +2,7 @@ package com.example.weatherapp.Screens.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,6 +27,11 @@ import androidx.compose.runtime.produceState
 import com.example.weatherapp.Data.DataOrException
 import com.example.weatherapp.Models.Weather
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -38,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.weatherapp.Data.ImageProvider
 import com.example.weatherapp.Navigation.WeatherScreens
 import com.example.weatherapp.R
 import com.example.weatherapp.Screens.LoadingScreen.LoadingScreen
@@ -47,6 +55,8 @@ import com.example.weatherapp.Widgets.TopSearchBar
 import com.example.weatherapp.Widgets.WeekDayTemperatureTile
 import com.example.weatherapp.ui.theme.fontFamily2
 import com.example.weatherapp.ui.theme.fontFamily5
+import kotlinx.coroutines.time.delay
+import kotlin.random.Random
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -84,14 +94,37 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
 
     val temperature = weatherData.list[0].main.temp.toInt()
 
+    // Background Image Animation Instructions
+    //----------------------------------------------------------------------
+
+    var currentImageIndex by remember { mutableStateOf(Random.nextInt(ImageProvider.images.size)) }
+    // Coroutine to switch image every 10 seconds
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(20000)
+            currentImageIndex = (currentImageIndex + Random.nextInt(ImageProvider.images.size)) % ImageProvider.images.size
+        }
+    }
+    val currentImage = remember(currentImageIndex) {
+        // This image provider is an object containing list of images
+        ImageProvider.images[currentImageIndex]
+    }
+    //----------------------------------------------------------------------
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.m15),
-            contentDescription = "HomeScreen",
-            contentScale = ContentScale.Crop,
-        )
+        // Crossfade is a composable function provided by Jetpack Compose for animating the transition between two states of a UI element.
+        Crossfade(
+            targetState = currentImage,
+            animationSpec = tween(2000), label = ""
+        ) { targetImage->
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = targetImage),
+                contentDescription = "HomeScreen",
+                contentScale = ContentScale.Crop,
+            )
+        }
+
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
@@ -318,7 +351,7 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
                         }
                     }
                     Text(
-                        modifier = Modifier.padding(top=50.dp),
+                        modifier = Modifier.padding(top = 50.dp),
                         text = "Weekly Report",
                         fontSize = 22.sp,
                         fontFamily = fontFamily2,
@@ -357,9 +390,9 @@ fun WeeklyReportRow(data: Weather) {
                 .background(Color.Transparent),
             contentPadding = PaddingValues(5.dp),
 
-        ) {
+            ) {
             val DaysData = data.list.chunked(8)
-            items(DaysData){dayData->
+            items(DaysData) { dayData ->
 
                 val temperatureOfDay = dayData.firstOrNull()?.main?.temp_max.toString()
                 val temperatureDate = dayData.firstOrNull()?.dt_txt.toString()
