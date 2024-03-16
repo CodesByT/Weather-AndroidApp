@@ -1,6 +1,7 @@
 package com.example.weatherapp.Screens.main
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.weatherapp.Navigation.WeatherScreens
 import com.example.weatherapp.R
 import com.example.weatherapp.Screens.LoadingScreen.LoadingScreen
 import com.example.weatherapp.Utilitites.formatDate
@@ -52,13 +54,14 @@ import com.example.weatherapp.ui.theme.fontFamily5
 @Composable
 fun WeatherMainScreen(
     navController: NavController,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    city: String?
 ) {
 
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true),
         producer = {
-            value = mainViewModel.getWeatherData(city = "Toronto")
+            value = mainViewModel.getWeatherData(city = city!!)
         }
     ).value
 
@@ -93,9 +96,11 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
             containerColor = Color.Transparent,
             topBar = {
                 TopSearchBar(
-                    title = weatherData.city.name + ", ${weatherData.city.country}",
                     navController = navController,
                     elevation = 5.dp,
+                    onAddActionClicked = {
+                        navController.navigate(WeatherScreens.SearchScreen.name)
+                    }
                 )
             }
         ) {
@@ -182,7 +187,7 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
                         // Humidity and Wind pressure Row
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 20.dp ,start = 20.dp, end = 20.dp),
+                            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -249,7 +254,7 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
                         // Sun Rise and Sun Set
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp ,start = 40.dp, end = 20.dp),
+                            .padding(top = 10.dp, start = 40.dp, end = 20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -340,11 +345,16 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
 @Composable
 fun WeeklyReportRow(data: Weather) {
     Surface(
-        modifier = Modifier.padding(top=20.dp).fillMaxWidth().background(Color.Transparent),
+        modifier = Modifier
+            .padding(top = 20.dp)
+            .fillMaxWidth()
+            .background(Color.Transparent),
         color = Color.Transparent
     ) {
         LazyRow(
-            modifier = Modifier.fillMaxWidth().background(Color.Transparent),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent),
             contentPadding = PaddingValues(5.dp),
 
         ) {

@@ -35,13 +35,14 @@ import com.example.weatherapp.ui.theme.fontFamily4
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSearchBar(
-    title: String = "Title",
+    title: String = "⛅ WeatherScope ⛅",
     icon: ImageVector? = null,
     isMainScreen: Boolean = true,
     elevation: Dp = 0.dp,
     navController: NavController,
     onAddActionClicked: () -> Unit = {},
-    onButtonClicked: () -> Unit = {}
+    onButtonClicked: () -> Unit = {},
+
 ) {
     Surface (
         modifier = Modifier
@@ -57,7 +58,7 @@ fun TopSearchBar(
             ),
             title = {
                 Text(
-                    text = "⛅ WeatherScope ⛅",
+                    text = title,
                     fontFamily = fontFamily4,
                     color = Color.Black,
                     fontSize = 18.sp,
@@ -67,7 +68,9 @@ fun TopSearchBar(
             },
             actions = {
                 if (isMainScreen) {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        onAddActionClicked.invoke()
+                    }) {
                         Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
                     }
                     IconButton(onClick = { /*TODO*/ }) {
