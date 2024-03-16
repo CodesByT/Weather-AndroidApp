@@ -16,7 +16,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -27,6 +29,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +45,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun WeatherSplashScreen(navController: NavHostController) {
-    val gradientColors = listOf(Color(0xffffffff), Color(0xFFFFD54F), Color(0xFFE65100))
     val scale = remember {
         Animatable(0f)
     }
@@ -68,35 +70,46 @@ fun WeatherSplashScreen(navController: NavHostController) {
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.splashscreen2),
+            painter = painterResource(id = R.drawable.a8),
             contentDescription = "Splash Image",
             contentScale = ContentScale.Crop,
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .scale(scale.value),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier  = Modifier.padding(top = 10.dp, bottom = 70.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(
-                modifier = Modifier.padding(15.dp),
-                text = "Your personal weather concierge.",
-                fontFamily = fontFamily4,
-                textAlign = TextAlign.Center,
-                color = Color(0xffffffff),
-                fontSize = 20.sp,
-                style = TextStyle(
-                    brush = Brush.linearGradient(
-                        colors = gradientColors
-                    )
-                )
-
+            Image(
+                modifier = Modifier.size(300.dp),
+                painter = painterResource(id = R.drawable.l2),
+                contentDescription = ""
             )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .scale(scale.value),
+                contentAlignment = Alignment.Center
+            ) {
+
+
+                Text(
+                    modifier = Modifier.padding(20.dp),
+                    text = "Your personal weather concierge.....",
+                    fontFamily = fontFamily4,
+                    textAlign = TextAlign.Center,
+                    color = Color(0xFF000000),
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+
+
+                )
+            }
+
             // This is just a DESI technique to load the fonts when we are on the splash screen
-            Text(text = "",fontFamily = fontFamily5)
-            Text(text = "",fontFamily = fontFamily3)
-            Text(text = "",fontFamily = fontFamily2)
-            Text(text = "",fontFamily = fontFamily1)
+            Text(text = "", fontFamily = fontFamily5)
+            Text(text = "", fontFamily = fontFamily3)
+            Text(text = "", fontFamily = fontFamily2)
+            Text(text = "", fontFamily = fontFamily1)
 
         }
     }

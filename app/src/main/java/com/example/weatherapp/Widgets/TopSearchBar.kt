@@ -5,6 +5,8 @@ import androidx.compose.foundation.content.MediaType.Companion.Text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -41,51 +43,58 @@ fun TopSearchBar(
     onAddActionClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {}
 ) {
-    CenterAlignedTopAppBar(
-        modifier = Modifier.padding(top = 15.dp,bottom = 15.dp,start = 10.dp,end = 10.dp).shadow(
-            elevation = elevation,
-        ),
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color(0xC4FFFFFF)
-        ),
-        title = {
-            Text(
-                text = "⛅ WeatherScope ⛅",
-                fontFamily = fontFamily4,
-                color = Color.Black,
-                fontSize = 18.sp,
-                modifier = Modifier.fillMaxWidth(),
-                fontWeight = FontWeight.W600
-            )
-        },
-        actions = {
-            if (isMainScreen) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
-                }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More Icon")
-                }
-            }
-        },
-        navigationIcon = {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "Back screen",
-                    tint = Color.Black,
-                    modifier = Modifier.clickable {
-                        onButtonClicked.invoke()
-                     }
-                )
-            }else{
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Invisible icon",
-                    tint = Color.Transparent,
-                )
-            }
-        },
+    Surface (
+        modifier = Modifier
+        .padding(top = 15.dp, bottom = 15.dp, start = 10.dp, end = 10.dp),
+        shape = CircleShape,
+        color = Color(0xA4FFFFFF),
+        elevation = elevation
+    ){
+        CenterAlignedTopAppBar(
 
-    )
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor =Color.Transparent
+            ),
+            title = {
+                Text(
+                    text = "⛅ WeatherScope ⛅",
+                    fontFamily = fontFamily4,
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontWeight = FontWeight.W600
+                )
+            },
+            actions = {
+                if (isMainScreen) {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
+                    }
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More Icon")
+                    }
+                }
+            },
+            navigationIcon = {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = "Back screen",
+                        tint = Color.Black,
+                        modifier = Modifier.clickable {
+                            onButtonClicked.invoke()
+                        }
+                    )
+                }else{
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Invisible icon",
+                        tint = Color.Transparent,
+                    )
+                }
+            },
+
+            )
+    }
+
 }
