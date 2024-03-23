@@ -27,11 +27,10 @@ interface WeatherDAO {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateFavourite(favourite: Favourite)
-    @Query("Select * from fav_tbl")
-    suspend fun deleteAllFavourite()
+
 
     @Delete
-    suspend fun deleteAllFavourite(favourite: Favourite)
+    suspend fun deleteFavourite(favourite: Favourite)
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.weatherapp.Widgets
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.content.MediaType.Companion.Text
@@ -17,6 +18,7 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
@@ -32,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,12 +45,16 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.weatherapp.Models.Favourite
 import com.example.weatherapp.Navigation.WeatherScreens
+import com.example.weatherapp.Screens.FavouriteScreen.FavouriteScreenViewModel
 import com.example.weatherapp.ui.theme.fontFamily2
 import com.example.weatherapp.ui.theme.fontFamily4
 
@@ -55,14 +62,18 @@ import com.example.weatherapp.ui.theme.fontFamily4
 @Composable
 fun TopSearchBar(
     title: String = "⛅ WeatherScope ⛅",
+    cityName: String = "Lahore",
+    countryName: String = "PK",
     icon: ImageVector? = null,
     isMainScreen: Boolean = true,
     elevation: Dp = 0.dp,
+    favouriteScreenViewModel: FavouriteScreenViewModel = hiltViewModel(),
     navController: NavController,
     onAddActionClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {},
 
     ) {
+    val context = LocalContext.current
     val showDialog = remember {
         mutableStateOf(false)
     }
@@ -121,13 +132,40 @@ fun TopSearchBar(
                         }
                     )
                 } else {
-                    Icon(
+                    val isAlreadyExist = favouriteScreenViewModel
+                        .favlist.collectAsState().value.filter { item ->
+                            (item.city == cityName)
+                        }
+                    if(isAlreadyExist.isNullOrEmpty()){
+                        Icon(
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(24.dp)
+                                .clickable {
+                                    favouriteScreenViewModel.insertFavourite(
+                                        Favourite(
+                                            city = cityName,
+                                            countryCode = countryName
+                                        )
+                                    )
+                                    Toast.makeText(context, "Added!!",Toast.LENGTH_LONG).show()
+                                },
+                            imageVector = Icons.Filled.FavoriteBorder,
+                            contentDescription = "Invisible icon",
+                            tint = Color(0x8B000000),
+                        )
+                    }else{
+                        Icon(
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(24.dp)
+                                .clickable {},
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Invisible icon",
+                            tint = Color.Red,
+                        )
+                    }
 
-                        modifier = Modifier.padding(start=10.dp).size(24.dp),
-                        imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "Invisible icon",
-                        tint = Color.Black,
-                    )
                 }
             },
 

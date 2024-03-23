@@ -155,7 +155,9 @@ fun MainScreenUI(weatherData: Weather, navController: NavController, WrongInput:
                     elevation = 5.dp,
                     onAddActionClicked = {
                         navController.navigate(WeatherScreens.SearchScreen.name)
-                    }
+                    },
+                    cityName = weatherData.city.name,
+                    countryName = weatherData.city.country
                 )
             }
         ) {
