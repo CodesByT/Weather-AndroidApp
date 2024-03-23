@@ -15,5 +15,5 @@ interface WeatherAPI {
         @Query("q") query : String,
         @Query("units") units : String = "metric",
         @Query("appid") appid : String = Constants.API_KEY
-    ):Weather
+    ):Weather // Returning the JSON data into this Kotlin Class
 }

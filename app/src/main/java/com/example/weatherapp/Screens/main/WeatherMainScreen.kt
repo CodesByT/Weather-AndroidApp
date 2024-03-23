@@ -1,6 +1,7 @@
 package com.example.weatherapp.Screens.main
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -27,10 +28,12 @@ import androidx.compose.runtime.produceState
 import com.example.weatherapp.Data.DataOrException
 import com.example.weatherapp.Models.Weather
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +41,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +51,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.weatherapp.Data.ImageProvider
 import com.example.weatherapp.Navigation.WeatherScreens
-import com.example.weatherapp.R
 import com.example.weatherapp.Screens.LoadingScreen.LoadingScreen
 import com.example.weatherapp.Utilitites.formatDate
 import com.example.weatherapp.Utilitites.formatDateTime
@@ -55,7 +58,7 @@ import com.example.weatherapp.Widgets.TopSearchBar
 import com.example.weatherapp.Widgets.WeekDayTemperatureTile
 import com.example.weatherapp.ui.theme.fontFamily2
 import com.example.weatherapp.ui.theme.fontFamily5
-import kotlinx.coroutines.time.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
@@ -75,12 +78,21 @@ fun WeatherMainScreen(
         }
     ).value
 
+    val defaultCityWeatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
+        initialValue = DataOrException(loading = true),
+        producer = {
+            value = mainViewModel.getWeatherData(city = "Lahore")
+        }
+    ).value
 
     if (weatherData.loading == true) {
         LoadingScreen()
 
-    } else if (weatherData.data != null) {
-        MainScreenUI(weatherData.data!!, navController = navController)
+    } else if (weatherData.data != null && weatherData.data!!.cod.toString() == "200") {
+        MainScreenUI(weatherData.data!!, navController = navController, WrongInput = false)
+    } else if(weatherData.data!!.cod.toString() != "200" ){
+        // In SOME case when user input Wrong City
+        MainScreenUI(defaultCityWeatherData.data!!, navController = navController, WrongInput = true)
     }
 
 }
@@ -88,7 +100,7 @@ fun WeatherMainScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreenUI(weatherData: Weather, navController: NavController) {
+fun MainScreenUI(weatherData: Weather, navController: NavController, WrongInput: Boolean) {
 
     val imageURl = "https://openweathermap.org/img/wn/${weatherData.list[0].weather[0].icon}.png"
 
@@ -98,11 +110,19 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
     //----------------------------------------------------------------------
 
     var currentImageIndex by remember { mutableStateOf(Random.nextInt(ImageProvider.images.size)) }
+    val coroutineScope = rememberCoroutineScope()
     // Coroutine to switch image every 10 seconds
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(20000)
-            currentImageIndex = (currentImageIndex + Random.nextInt(ImageProvider.images.size)) % ImageProvider.images.size
+    DisposableEffect(Unit) {
+        // Launch the coroutine within the provided coroutine scope
+        val job = coroutineScope.launch {
+            while (true) {
+                delay(20000)
+                currentImageIndex = (currentImageIndex + Random.nextInt(ImageProvider.images.size)) % ImageProvider.images.size
+            }
+        }
+        // When the composable is disposed, cancel the coroutine job
+        onDispose {
+            job.cancel()
         }
     }
     val currentImage = remember(currentImageIndex) {
@@ -110,7 +130,9 @@ fun MainScreenUI(weatherData: Weather, navController: NavController) {
         ImageProvider.images[currentImageIndex]
     }
     //----------------------------------------------------------------------
-
+    if(WrongInput){
+        Toast.makeText(LocalContext.current,"WRONG CITY INPUT ⚠️",Toast.LENGTH_SHORT).show()
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         // Crossfade is a composable function provided by Jetpack Compose for animating the transition between two states of a UI element.
         Crossfade(

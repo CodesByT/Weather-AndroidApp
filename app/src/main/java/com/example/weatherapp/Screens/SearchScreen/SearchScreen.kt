@@ -43,7 +43,7 @@ fun SearchScreen(navController: NavController) {
                 navController = navController,
                 icon = Icons.Default.ArrowBack,
                 isMainScreen = false,
-                title = "          ⛅ WeatherScope ⛅"
+                title = "            Search you city \uD83D\uDD0E"
             ) {
                 navController.popBackStack()
             }
